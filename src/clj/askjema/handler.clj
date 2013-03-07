@@ -16,8 +16,9 @@
 
 (defroutes app-routes
   (GET "/" [] (io/resource "skjema.html"))
-  (POST "/review" [uri] (generate-response
+  (POST "/load" [uri] (generate-response
                           (-> (sparql/fetch (URI. uri)) sparql/solutions)))
+  (PUT "/save" [uri old updated] (sparql/save (URI. uri) old updated))
   (route/resources "/")
   (route/not-found "Not Found"))
 

@@ -108,12 +108,23 @@
 
 (defn load-review []
   (let [body {:uri (.-value (sel1 "#review-uri"))}]
-    (edn-call "/review" loaded "POST" body)))
+    (edn-call "/load" loaded "POST" body)))
 
+(defn save-review []
+  (let [uri (.-value (sel1 "#review-uri"))
+        old {:title (.-data-original-value (sel1 "#title"))
+             :teaser (.-data-original-value (sel1 "#teaser"))
+             :text (.-data-original-value (sel1 "#text"))}
+        updated {:title (.-value (sel1 "#title"))
+                 :teaser (.-value (sel1 "#teaser"))
+                 :text (.-value (sel1 "#text"))}
+        body {:uri uri :old old :updated updated}]
+    (edn-call "/save" load-review "PUT" body)))
 
 (defn ^:export init []
   (log "Hallo der, mister Åsen.")
   (dom/listen! (sel1 "#load") :click load-review)
+  (dom/listen! (sel1 "#save") :click save-review)
   (dom/listen! (sel1 "#title") :keyup sync-preview)
   (dom/listen! (sel1 "#teaser") :keyup sync-preview)
   (dom/listen! (sel1 "#text") :keyup sync-preview)

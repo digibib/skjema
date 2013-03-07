@@ -23,7 +23,7 @@
 (def reviewsgraph (URI. "http://data.deichman.no/reviews"))
 (def sourcegraph (URI. "http://data.deichman.no/sources"))
 
-(defn review
+(defn load-review
   [uri]
   (query
     (from reviewsgraph)
@@ -61,11 +61,28 @@
                    [:dc :creator] :wauthor \.
              :wauthor [:foaf :name] :workauthor))))
 
+(defn save-review
+  [uri old updated]
+  (query
+    (with reviewsgraph)
+    (delete uri [:rev :title] (old :title) \;
+                [:dc :abstract] (old :teaser) \;
+                [:rev :text] [(old :text) :no] \.)
+    (insert uri [:rev :title] (updated :title) \;
+                [:dc :abstract] (updated :teaser) \;
+                [:rev :text] [(updated :text) :no])))
+
 (defn fetch
   [uri]
   (client/get (config :endpoint)
-              {:query-params {"query" (review uri)
+              {:query-params {"query" (load-review uri)
                               "format" "application/sparql-results+json"}}))
+(defn save
+  [uri old updated]
+  (client/post (config :sparul)
+               {:query-params {"query" (save-review uri old updated)
+                               "format" "application/sparql-results+json"}
+                :digest-auth [(config :username) (config :password)]}))
 
 (defn bindings
   [response]
