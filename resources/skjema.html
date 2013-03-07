@@ -13,8 +13,8 @@
 
       <div id="heading">
         <div>
-          <input type="text" placeholder="Anbefalingens URI">
-          <button>Åpne</button><button disabled="disabled">Lagre</button>
+          <input id="review-uri" type="text" placeholder="Anbefalingens URI">
+          <button id="load">Åpne</button><button id="save" disabled="disabled">Lagre</button>
         </div>
       </div>
 
@@ -31,8 +31,38 @@
         <p>blabl detter skjer skfa sdf .</p>
       </div>
 
+      <div id="metadata">
+        <table>
+          <thead>
+            <tr>
+              <td>property</td>
+              <td>URI</td>
+              <td>labels/literals</td>
+          </thead>
+          <tbody>
+            <tr class="created">
+              <td class="propert">Opprettet</td>
+              <td class="uri"></td>
+              <td class="label"></td>
+            </tr>
+            <tr class="issued">
+              <td class="propert">Publisert</td>
+              <td class="uri"></td>
+              <td class="label"></td>
+            </tr>
+            <tr class="modified">
+              <td class="propert">Sist endret</td>
+              <td class="uri"></td>
+              <td class="label"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
 
+  <script src="js/app.js"></script>
+  <script>askjema.client.init();</script>
 
   </body>
 

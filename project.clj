@@ -9,7 +9,8 @@
                  [fogus/ring-edn "0.2.0-SNAPSHOT"]
                  [clj-http "0.6.4"]
                  [cheshire "5.0.1"]
-                 [matsu "0.1.0-SNAPSHOT"]]
+                 [matsu "0.1.0-SNAPSHOT"]
+                 [domina "1.0.1"]]
   :plugins [[lein-ring "0.8.3"]
             [lein-cljsbuild "0.3.0"]]
   :ring {:handler askjema.handler/war-handler }
@@ -17,4 +18,10 @@
              {:ring
               {:open-browser? false, :stacktraces? false, :auto-reload? false}}
              :dev
-             {:dependencies [[ring-mock "0.1.3"] [ring/ring-devel "1.1.8"]]}})
+             {:dependencies [[ring-mock "0.1.3"] [ring/ring-devel "1.1.8"]]}}
+  :cljsbuild {:builds
+              [{:source-paths ["src/cljs"],
+                :compiler
+                {:pretty-print true,
+                 :output-to "resources/public/js/app.js",
+                 :optimizations :whitespace}}]})
