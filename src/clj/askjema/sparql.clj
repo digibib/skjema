@@ -7,7 +7,8 @@
             [clojure.walk :refer [keywordize-keys]])
   (:import java.net.URI))
 
-(def endpoint "http://marc2rdf.deichman.no:8890/sparql")
+(def config
+  (read-string (slurp "resources/config.clj")))
 
 (register-namespaces {:skos "<http://www.w3.org/2004/02/skos/core#>"
                       :deich "<http://data.deichman.no/>"
@@ -62,7 +63,7 @@
 
 (defn fetch
   [uri]
-  (client/get endpoint
+  (client/get (config :endpoint)
               {:query-params {"query" (review uri)
                               "format" "application/sparql-results+json"}}))
 
