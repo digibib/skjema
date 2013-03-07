@@ -25,16 +25,19 @@
             (clj->js {"Content-Type" "application/edn"})))
 
 (defn sync-preview []
-  (doseq [e ["title" "teaser" "text"]]
-    (let [elem (sel1 (str "#" e))
-          old (.-data-original-value elem)
-          nju (.-value elem)]
-      (if (not= old nju)
-        (dom/add-class! elem "altered")
-        (dom/remove-class! elem "altered"))
-      (set! (.-innerHTML (sel1 (str "#preview-" e)))
-            (.-value (sel1 (str "#" e))))))
-      )
+  (do
+    (doseq [e ["title" "teaser" "text"]]
+      (let [elem (sel1 (str "#" e))
+            old (.-data-original-value elem)
+            nju (.-value elem)]
+        (if (not= old nju)
+          (dom/add-class! elem "altered")
+          (dom/remove-class! elem "altered"))
+        (set! (.-innerHTML (sel1 (str "#preview-" e)))
+              (.-value (sel1 (str "#" e))))))
+    (if (= 0 (.-length (sel ".altered")))
+      (set! (.-disabled (sel1 "#save")) true)
+      (set! (.-disabled (sel1 "#save")) false))))
 
 (deftemplate table-body [review edition work audience reviewer worksource]
   [:tbody
