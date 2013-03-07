@@ -29,8 +29,9 @@
     (from-named booksgraph sourcegraph)
     (select :title :text :teaser :created :issued :modified :audience
             :source :sourcename :reviewer :reviewername :workplace
-            :workplacename :edition :editiontitle :editionauthor
-            :work :worktitle :workauthor)
+            :workplacename :edition :editiontitle
+            [(group-concat :editionauthor ", ") :editionauthor] :work :worktitle
+            [(group-concat :workauthor ", ") :workauthor])
     (where uri [:rev :title] :title \;
                [:dc :abstract] :teaser \;
                [:rev :text] :text \;
