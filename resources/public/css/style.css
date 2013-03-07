@@ -19,6 +19,7 @@ button {
 	margin-left: 1em;
 }
 
+.altered { border: 2px solid #ff9900 !important;}
 
 .sync {
 	font-family: inherit;

@@ -26,8 +26,15 @@
 
 (defn sync-preview []
   (doseq [e ["title" "teaser" "text"]]
-    (set! (.-innerHTML (sel1 (str "#preview-" e)))
-          (.-value (sel1 (str "#" e))))))
+    (let [elem (sel1 (str "#" e))
+          old (.-data-original-value elem)
+          nju (.-value elem)]
+      (if (not= old nju)
+        (dom/add-class! elem "altered")
+        (dom/remove-class! elem "altered"))
+      (set! (.-innerHTML (sel1 (str "#preview-" e)))
+            (.-value (sel1 (str "#" e))))))
+      )
 
 (deftemplate table-body [review edition work audience reviewer worksource]
   [:tbody
@@ -89,7 +96,10 @@
       (set! (.-value (sel1 "#title")) (->> review first :title))
       (set! (.-data-original-value (sel1 "#title")) (->> review first :title))
       (set! (.-value (sel1 "#teaser")) (->> review first :teaser))
+      (set! (.-data-original-value (sel1 "#teaser")) (->> review first :teaser))
       (set! (.-value (sel1 "#text")) (->> review first :text)))
+      (set! (.-data-original-value (sel1 "#text")) (->> review first :text))
+
       (sync-preview)
       (set! (.-innerHTML (sel1 "tbody"))
             (.-innerHTML
