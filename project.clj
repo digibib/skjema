@@ -4,7 +4,6 @@
   :source-paths ["src/clj"]
   :dependencies [[org.clojure/clojure "1.5.0"]
                  [compojure "1.1.5"]
-                 [enlive "1.1.1"]
                  [ring-server "0.2.7"]
                  [fogus/ring-edn "0.2.0-SNAPSHOT"]
                  [clj-http "0.6.4"]

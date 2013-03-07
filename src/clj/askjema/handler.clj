@@ -5,8 +5,8 @@
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.file-info :refer [wrap-file-info]]
             [ring.middleware.edn :refer [wrap-edn-params]]
-            [askjema.views :as views]
-            [askjema.sparql :as sparql])
+            [askjema.sparql :as sparql]
+            [clojure.java.io :as io])
   (:import java.net.URI))
 
 (defn generate-response [data & [status]]
@@ -15,7 +15,7 @@
    :body (pr-str data)})
 
 (defroutes app-routes
-  (GET "/" [] (views/skjema))
+  (GET "/" [] (io/resource "skjema.html"))
   (POST "/review" [uri] (generate-response
                           (-> (sparql/fetch (URI. uri)) sparql/solutions)))
   (route/resources "/")
