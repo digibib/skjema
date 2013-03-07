@@ -86,7 +86,7 @@
      [:a {:href (->> worksource first :source)} (str \< (->> worksource first :source) \>)]]]
    ])
 
-(defn loaded [event]
+(defn loaded [event msg]
   (let [response (.-target event)
         solutions (reader/read-string (.getResponseText response))
         review (extract [:title :teaser :text :created :issued :modified] solutions)
@@ -107,10 +107,12 @@
       (set! (.-innerHTML (sel1 "tbody"))
             (.-innerHTML
               (table-body review edition work audience reviewer worksource)))
+      (set! (.-innerHTML (sel1 "#message")) "OK! Anbefaling åpnet/lagret")
     ))
 
 (defn load-review []
   (let [body {:uri (.-value (sel1 "#review-uri"))}]
+    (set! (.-innerHTML (sel1 "#message")) "<img src='img/loading.gif'>")
     (edn-call "/load" loaded "POST" body)))
 
 (defn save-review []
@@ -122,7 +124,8 @@
                  :teaser (.-value (sel1 "#teaser"))
                  :text (.-value (sel1 "#text"))}
         body {:uri uri :old old :updated updated}]
-    (edn-call "/save" load-review "PUT" body)))
+    (edn-call "/save" load-review "PUT" body)
+    (set! (.-innerHTML (sel1 "#message")) "<img src='img/loading.gif'>")))
 
 (defn ^:export init []
   (log "Hallo der, mister Åsen.")

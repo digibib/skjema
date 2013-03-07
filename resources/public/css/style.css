@@ -44,6 +44,8 @@ button {
 	border-bottom: 1px dashed #aaa;
 }
 
+#message { margin-left: 1em; }
+
 #edit {
 	width: 48%;
 	padding: 1%;
