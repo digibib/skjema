@@ -20,42 +20,30 @@
 
       <div id="edit">
         <form>
-          <input class="endring" id="title" type="text" name="title" placeholder="Tittel på anbefalingen"/>
-          <textarea class="endring" id="teaser" name="teaser" rows="2" placeholder="Skriv en teaser, maks to setninger"></textarea>
-          <textarea class="endring" id="text" name="text" rows="20" placeholder="Skriv en omtale"></textarea>
+          <input class="sync" id="title" data-original-value="" type="text" name="title" placeholder="Tittel på anbefalingen"/>
+          <textarea class="sync" id="teaser" data-original-value="" name="teaser" rows="2" placeholder="Skriv en teaser, maks to setninger"></textarea>
+          <textarea class="sync" id="text" data-original-value="" name="text" rows="20" placeholder="Skriv en omtale"></textarea>
         </form>
 
       </div>
 
       <div id="preview">
-        <p>blabl detter skjer skfa sdf .</p>
+        <h2 id="preview-title"></h2>
+        <p id="preview-teaser"></p>
+        <div id="preview-text"></div>
       </div>
 
       <div id="metadata">
+        <h3>Metadata</h3>
         <table>
           <thead>
-            <tr>
-              <td>property</td>
-              <td>URI</td>
-              <td>labels/literals</td>
+            <tr id="headi">
+              <th>property</th>
+              <th>labels/literals</th>
+              <th>URI</th>
+            </tr>
           </thead>
-          <tbody>
-            <tr class="created">
-              <td class="propert">Opprettet</td>
-              <td class="uri"></td>
-              <td class="label"></td>
-            </tr>
-            <tr class="issued">
-              <td class="propert">Publisert</td>
-              <td class="uri"></td>
-              <td class="label"></td>
-            </tr>
-            <tr class="modified">
-              <td class="propert">Sist endret</td>
-              <td class="uri"></td>
-              <td class="label"></td>
-            </tr>
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
 
