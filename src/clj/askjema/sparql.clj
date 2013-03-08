@@ -85,9 +85,8 @@
 (defn save
   [uri old updated]
   (client/post (config :sparul)
-               {:query-params {"query" (save-review uri old updated)
-                               "format" "application/sparql-results+json"}
-                :digest-auth [(config :username) (config :password)]}))
+               {:form-params {:query (save-review uri old updated) }
+                :digest-auth [(config :username) (config :password)] }))
 
 (defn bindings
   [response]
