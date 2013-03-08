@@ -2,10 +2,10 @@
   (:require [clojure.browser.repl :as repl]
             [cljs.reader :as reader]
             [goog.net.XhrIo :as xhr]
-            [dommy.template :as hmtl]
-            [dommy.core :as dom])
-  (:require-macros [dommy.core-compile :refer [sel sel1]]
-                   [dommy.template-compile :refer [node deftemplate]]))
+            [dommy.template :as html]
+            [dommy.core :as dom]
+            [askjema.views :as views])
+  (:require-macros [dommy.core-compile :refer [sel sel1]]))
 
 ;(repl/connect "http://localhost:9000/repl")
 
@@ -39,56 +39,6 @@
       (set! (.-disabled (sel1 "#save")) true)
       (set! (.-disabled (sel1 "#save")) false))))
 
-(deftemplate table-body [review edition work audience reviewer worksource]
-  [:tbody
-   [:tr#created
-    [:td.property "Opprettet"]
-    [:td.label (->> review first :created)]
-    [:td.uri "-"]]
-   [:tr#issued
-    [:td.property "Publisert"]
-    [:td.label (->> review first :issued)]
-    [:td.uri "-"]]
-   [:tr#modified
-    [:td.property "Sist endret"]
-    [:td.label (->> review first :modified)]
-    [:td.uri "-"]]
-   [:tr#edition
-    [:td.property "Omtaler utgave"]
-    [:td.label (str \" (->> edition first :editiontitle) \" " av " (->> edition first :editionauthor))]
-    [:td.uri
-     [:a {:href (->> edition first :edition)} (str \< (->> edition first :edition) \>)]]]
-   [:tr#work
-    [:td.property "Omtaler verk"]
-    [:td.label (str \" (->> work first :worktitle) \" " av " (->> work first :workauthor))]
-    [:td.uri
-     [:a {:href (->> work first :work)} (str \< (->> work first :work) \>)]]]
-   (for [aud audience]
-     [:tr.audience
-      [:td.property "Målgruppe"]
-      [:td.label "-"]
-      [:td.uri (str \< (aud :audience) \> )]])
-   (for [rev reviewer]
-     [:tr.reviewer
-      [:td.property "Anmelder"]
-      [:td.label (or (rev :reviewername) "(mangler foaf:name)")]
-      [:td.uri
-       [:a {:href (rev :reviewer) } (str \< (rev :reviewer) \> )]]])
-   [:tr#workplace
-    [:td.property "Arbeidssted"]
-    [:td.label (or (->> worksource first :workplacename) "(ikke tilknyttet)")]
-    (if (->> worksource first :workplace)
-      [:td.uri
-       [:a {:href (->> worksource first :workplace) } (str \< (->> worksource first :workplace) \>)]]
-      [:td.uri "-"])
-    ]
-   [:tr#source
-    [:td.property "Kilde"]
-    [:td.label (->> worksource first :sourcename)]
-    [:td.uri
-     [:a {:href (->> worksource first :source)} (str \< (->> worksource first :source) \>)]]]
-   ])
-
 (defn loaded [event]
   (let [response (.-target event)
         solutions (reader/read-string (.getResponseText response))
@@ -110,7 +60,7 @@
       (sync-preview)
       (set! (.-innerHTML (sel1 "tbody"))
             (.-innerHTML
-              (table-body review edition work audience reviewer worksource)))
+              (views/tbody review edition work audience reviewer worksource)))
       (set! (.-innerHTML (sel1 "#message")) "OK! Anbefaling åpnet/lagret")
     ))
 
