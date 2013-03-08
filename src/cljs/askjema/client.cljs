@@ -71,14 +71,17 @@
    (for [rev reviewer]
      [:tr.reviewer
       [:td.property "Anmelder"]
-      [:td.label (rev :reviewername)]
+      [:td.label (or (rev :reviewername) "(mangler foaf:name)")]
       [:td.uri
        [:a {:href (rev :reviewer) } (str \< (rev :reviewer) \> )]]])
    [:tr#workplace
     [:td.property "Arbeidssted"]
-    [:td.label (->> worksource first :workplacename)]
-    [:td.uri
-     [:a {:href (->> worksource first :workplace)} (str \< (->> worksource first :workplace) \>)]]]
+    [:td.label (or (->> worksource first :workplacename) "(ikke tilknyttet)")]
+    (if (->> worksource first :workplace)
+      [:td.uri
+       [:a {:href (->> worksource first :workplace) } (str \< (->> worksource first :workplace) \>)]]
+      [:td.uri "-"])
+    ]
    [:tr#source
     [:td.property "Kilde"]
     [:td.label (->> worksource first :sourcename)]
@@ -86,7 +89,7 @@
      [:a {:href (->> worksource first :source)} (str \< (->> worksource first :source) \>)]]]
    ])
 
-(defn loaded [event msg]
+(defn loaded [event]
   (let [response (.-target event)
         solutions (reader/read-string (.getResponseText response))
         review (extract [:title :teaser :text :created :issued :modified] solutions)
@@ -96,6 +99,7 @@
         reviewer (extract [:reviewer :reviewername] solutions)
         worksource (extract [:workplace :workplacename :source :sourcename] solutions)]
     (do
+      (set! (.-value (sel1 "#modified")) (->> review first :modified))
       (set! (.-value (sel1 "#title")) (->> review first :title))
       (set! (.-data-original-value (sel1 "#title")) (->> review first :title))
       (set! (.-value (sel1 "#teaser")) (->> review first :teaser))
@@ -119,7 +123,8 @@
   (let [uri (.-value (sel1 "#review-uri"))
         old {:title (.-data-original-value (sel1 "#title"))
              :teaser (.-data-original-value (sel1 "#teaser"))
-             :text (.-data-original-value (sel1 "#text"))}
+             :text (.-data-original-value (sel1 "#text"))
+             :modified (.-value (sel1 "#modified"))}
         updated {:title (.-value (sel1 "#title"))
                  :teaser (.-value (sel1 "#teaser"))
                  :text (.-value (sel1 "#text"))}

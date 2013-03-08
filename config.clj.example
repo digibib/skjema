@@ -1,4 +1,0 @@
-{:endpoint "http://localhos:8890/sparql"
- :sparul "http://localhos:8890/sparql-auth"
- :username "user"
- :password "secret" }

@@ -4,11 +4,14 @@
             [boutros.matsu.sparql :refer :all]
             [boutros.matsu.core :refer [register-namespaces]]
             [cheshire.core :refer [parse-string]]
-            [clojure.walk :refer [keywordize-keys]])
+            [clj-time.core :refer [now from-time-zone time-zone-for-offset]]
+            [clojure.walk :refer [keywordize-keys]]
+            [clojure.java.io :as io]
+            [askjema.config :refer [config]])
   (:import java.net.URI))
 
-(def config
-  (read-string (slurp "resources/config.clj")))
+(defn modify [q uri]
+  (assoc q :with {:tag "MODIFY" :bounds [" "] :sep " " :content [uri]}))
 
 (register-namespaces {:skos "<http://www.w3.org/2004/02/skos/core#>"
                       :deich "<http://data.deichman.no/>"
@@ -17,7 +20,8 @@
                       :rdfs "<http://www.w3.org/2000/01/rdf-schema#>"
                       :fabio "<http://purl.org/spar/fabio/>"
                       :rev "<http://purl.org/stuff/rev#>"
-                      :org "<http://www.w3.org/ns/org#>"})
+                      :org "<http://www.w3.org/ns/org#>"
+                      :xsd "<http://www.w3.org/2001/XMLSchema#>"})
 
 (def booksgraph (URI. "http://data.deichman.no/books"))
 (def reviewsgraph (URI. "http://data.deichman.no/reviews"))
@@ -42,14 +46,12 @@
                [:dc :audience] :audience \;
                [:dc :source] :source \;
                [:rev :reviewer] :reviewer \.
-           (graph sourcegraph)
-           (group
-             :reviewer [:foaf :name] :reviewername \;
-                       [:org :memberOf] :workplace \.
-             :workplace [:skos :prefLabel] :workplacename \.
-             :source [:foaf :name] :sourcename \.)
-           (graph booksgraph)
-           (group
+           (graph sourcegraph :source [:foaf :name] :sourcename \.)
+           (optional
+             (graph sourcegraph :reviewer [:foaf :name] :reviewername \;
+                                          [:org :memberOf] :workplace \.
+                                :workplace [:skos :prefLabel] :workplacename \.))
+           (graph booksgraph
              :edition a [:fabio :Manifestation] \;
                       [:rev :hasReview] uri \;
                       [:dc :title] :editiontitle \;
@@ -64,13 +66,16 @@
 (defn save-review
   [uri old updated]
   (query
-    (with reviewsgraph)
+    (modify reviewsgraph)
     (delete uri [:rev :title] (old :title) \;
                 [:dc :abstract] (old :teaser) \;
-                [:rev :text] [(old :text) :no] \.)
+                [:rev :text] [(old :text) :no] \;
+                [:dc :modified] [(old :modified) "xsd:dateTime"] \.)
     (insert uri [:rev :title] (updated :title) \;
                 [:dc :abstract] (updated :teaser) \;
-                [:rev :text] [(updated :text) :no])))
+                [:rev :text] [(updated :text) :no] \;
+                [:dc :modified] [(str (from-time-zone (now) (time-zone-for-offset 1))) "xsd:dateTime"]
+                )))
 
 (defn fetch
   [uri]

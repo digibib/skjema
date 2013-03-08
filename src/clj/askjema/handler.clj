@@ -15,10 +15,15 @@
    :body (pr-str data)})
 
 (defroutes app-routes
-  (GET "/" [] (io/resource "skjema.html"))
-  (POST "/load" [uri] (generate-response
-                          (-> (sparql/fetch (URI. uri)) sparql/solutions)))
-  (PUT "/save" [uri old updated] (sparql/save (URI. uri) old updated))
+  (GET "/" [] (io/resource "public/skjema.html"))
+
+  (POST "/load" [uri] (do
+                        (println (sparql/load-review (URI. uri)))
+                        (generate-response
+                          (-> (sparql/fetch (URI. uri)) sparql/solutions))))
+  (PUT "/save" [uri old updated] (do
+                                   (println (sparql/save-review (URI. uri) old updated))
+                                   (sparql/save (URI. uri) old updated)))
   (route/resources "/")
   (route/not-found "Not Found"))
 
