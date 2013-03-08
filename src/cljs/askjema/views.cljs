@@ -1,6 +1,6 @@
 (ns askjema.views
-  (:require [dommy.template :as html]
-            (:require-macros [dommy.template-compile :refer [deftemplate]])))
+  (:require [dommy.template :as html])
+  (:require-macros [dommy.template-compile :refer [deftemplate]]))
 
 (deftemplate tbody [review edition work audience reviewer worksource]
   [:tbody
