@@ -13,4 +13,4 @@ pom.xml
 .lein-plugins
 .lein-env
 notater
-/resources/config.clj
+/src/clj/askjema/config.clj

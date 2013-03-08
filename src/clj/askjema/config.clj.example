@@ -1,0 +1,7 @@
+(ns askjema.config)
+
+(def config
+  {:endpoint "http://localhost:8890/sparql"
+   :sparul "http://localhost:8890/sparql-auth"
+   :username "user"
+   :password "secret"})
