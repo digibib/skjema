@@ -1,19 +1,17 @@
-# askjema
+# O'HOI ETT SKJEMA!
 
-FIXME
+Et skjema for de invidde for å kunne oppdatere bokanbefalinger i RDF-basen.
 
-## Prerequisites
+## Deployment
 
-You will need [Leiningen][1] 1.7.0 or above installed.
+Pakk som jar med:
 
-[1]: https://github.com/technomancy/leiningen
+    lein ring uberjar
 
-## Running
+Start applikasjonen med:
 
-To start a web server for the application, run:
+    java -jar askjema-<version>-standalone.jar
 
-    lein ring server
+Eller pakk som war for å deployes i tomcat e.l:
 
-## License
-
-Copyright © 2013 FIXME
+     lein ring uberwar
