@@ -60,6 +60,8 @@
       (set! (.-data-original-value (sel1 "#teaser")) (->> review first :teaser))
       (set! (.-value (sel1 "#text")) (->> review first :text)))
       (set! (.-data-original-value (sel1 "#text")) (->> review first :text))
+      (set! (.-data-original-value (sel1 "#review-uri"))
+            (.trim (.-value (sel1 "#review-uri"))))
       (sync-preview)
       (set! (.-innerHTML (sel1 "tbody"))
             (.-innerHTML
@@ -72,7 +74,7 @@
     (edn-call "/load" loaded "POST" body)))
 
 (defn save-review []
-  (let [uri (.-value (sel1 "#review-uri"))
+  (let [uri (.-data-original-value (sel1 "#review-uri"))
         old {:title (.-data-original-value (sel1 "#title"))
              :teaser (.-data-original-value (sel1 "#teaser"))
              :text (.-data-original-value (sel1 "#text"))
