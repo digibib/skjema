@@ -7,8 +7,6 @@
             [askjema.views :as views])
   (:require-macros [dommy.core-compile :refer [sel sel1]]))
 
-;(repl/connect "http://localhost:9000/repl")
-
 (defn log [& more]
   (.log js/console (apply str more)))
 
@@ -39,6 +37,12 @@
       (set! (.-disabled (sel1 "#save")) true)
       (set! (.-disabled (sel1 "#save")) false))))
 
+(defn feedback [msg]
+  (set! (.-innerHTML (sel1 "#message")) msg))
+
+(defn wait-please! []
+  (feedback "<img src='img/loading.gif'>"))
+
 (defn loaded [event]
   (let [response (.-target event)
         solutions (reader/read-string (.getResponseText response))
@@ -56,17 +60,15 @@
       (set! (.-data-original-value (sel1 "#teaser")) (->> review first :teaser))
       (set! (.-value (sel1 "#text")) (->> review first :text)))
       (set! (.-data-original-value (sel1 "#text")) (->> review first :text))
-
       (sync-preview)
       (set! (.-innerHTML (sel1 "tbody"))
             (.-innerHTML
               (views/tbody review edition work audience reviewer worksource)))
-      (set! (.-innerHTML (sel1 "#message")) "OK! Anbefaling åpnet/lagret")
-    ))
+      (feedback "OK! Anbefaling åpnet.")))
 
 (defn load-review []
-  (let [body {:uri (.-value (sel1 "#review-uri"))}]
-    (set! (.-innerHTML (sel1 "#message")) "<img src='img/loading.gif'>")
+  (let [body {:uri (.trim (.-value (sel1 "#review-uri")))}]
+    (wait-please!)
     (edn-call "/load" loaded "POST" body)))
 
 (defn save-review []
@@ -80,7 +82,7 @@
                  :text (.-value (sel1 "#text"))}
         body {:uri uri :old old :updated updated}]
     (edn-call "/save" load-review "PUT" body)
-    (set! (.-innerHTML (sel1 "#message")) "<img src='img/loading.gif'>")))
+    (wait-please!)))
 
 (defn ^:export init []
   (log "Hallo der, mister Åsen.")
@@ -88,5 +90,8 @@
   (dom/listen! (sel1 "#save") :click save-review)
   (dom/listen! (sel1 "#title") :keyup sync-preview)
   (dom/listen! (sel1 "#teaser") :keyup sync-preview)
-  (dom/listen! (sel1 "#text") :keyup sync-preview)
-  )
+  (dom/listen! (sel1 "#text") :keyup sync-preview))
+
+;; Debug
+
+;(repl/connect "http://localhost:9000/repl")
