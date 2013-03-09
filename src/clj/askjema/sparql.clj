@@ -80,13 +80,16 @@
 (defn fetch
   [uri]
   (client/get (config :endpoint)
-              {:query-params {"query" (load-review uri)
-                              "format" "application/sparql-results+json"}}))
+              (merge (config :http-options)
+                     {:query-params
+                      {"query" (load-review uri)
+                       "format" "application/sparql-results+json"}})))
 (defn save
   [uri old updated]
   (client/post (config :sparul)
-               {:form-params {:query (save-review uri old updated) }
-                :digest-auth [(config :username) (config :password)] }))
+               (merge (config :http-options)
+                      {:form-params {:query (save-review uri old updated) }
+                       :digest-auth [(config :username) (config :password)]})))
 
 (defn bindings
   [response]

@@ -4,4 +4,5 @@
   {:endpoint "http://localhost:8890/sparql"
    :sparul "http://localhost:8890/sparql-auth"
    :username "user"
-   :password "secret"})
+   :password "secret"
+   :http-options {:throw-exceptions false :debug true :debug-body true}})
