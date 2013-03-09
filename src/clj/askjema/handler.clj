@@ -16,10 +16,16 @@
 
 (defroutes app-routes
   (GET "/" [] (io/resource "public/skjema.html"))
-
-  (POST "/load" [uri] (generate-response
-                        (-> (sparql/fetch (URI. uri)) sparql/solutions)))
-  (PUT "/save" [uri old updated] (sparql/save (URI. uri) old updated))
+  (POST "/load" [uri]
+        (let [res (sparql/fetch (URI. uri))]
+          (if (= 200 (res :status))
+            (generate-response (sparql/solutions res))
+            (generate-response "Noe gikk galt" (res :status)))))
+  (PUT "/save" [uri old updated]
+       (let [res (sparql/save (URI. uri) old updated)]
+         (if (= 200 (res :status))
+           (generate-response "OK. Anbefaling lagret")
+           (generate-response "Fikk ikke lagret." (res :status)))))
   (route/resources "/")
   (route/not-found "Not Found"))
 

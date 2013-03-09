@@ -37,6 +37,17 @@
       (set! (.-disabled (sel1 "#save")) true)
       (set! (.-disabled (sel1 "#save")) false))))
 
+(defn saved-sync []
+  (do
+    (doseq [e ["title" "teaser" "text"]]
+      (let [elem (sel1 (str "#" e))
+            old (.-data-original-value elem)
+            nju (.-value elem)]
+        (dom/remove-class! elem "altered")
+        (set! (.-data-original-value elem)
+              (.-value (sel1 (str "#" e))))))
+    (set! (.-disabled (sel1 "#save")) false)))
+
 (defn feedback [msg]
   (set! (.-innerHTML (sel1 "#message")) msg))
 
@@ -45,28 +56,40 @@
 
 (defn loaded [event]
   (let [response (.-target event)
-        solutions (reader/read-string (.getResponseText response))
-        review (extract [:title :teaser :text :created :issued :modified] solutions)
-        edition (extract [:edition :editiontitle :editionauthor] solutions)
-        work (extract [:work :worktitle :workauthor] solutions)
-        audience (extract [:audience] solutions)
-        reviewer (extract [:reviewer :reviewername] solutions)
-        worksource (extract [:workplace :workplacename :source :sourcename] solutions)]
-    (do
-      (set! (.-value (sel1 "#modified")) (->> review first :modified))
-      (set! (.-value (sel1 "#title")) (->> review first :title))
-      (set! (.-data-original-value (sel1 "#title")) (->> review first :title))
-      (set! (.-value (sel1 "#teaser")) (->> review first :teaser))
-      (set! (.-data-original-value (sel1 "#teaser")) (->> review first :teaser))
-      (set! (.-value (sel1 "#text")) (->> review first :text)))
-      (set! (.-data-original-value (sel1 "#text")) (->> review first :text))
-      (set! (.-data-original-value (sel1 "#review-uri"))
-            (.trim (.-value (sel1 "#review-uri"))))
-      (sync-preview)
-      (set! (.-innerHTML (sel1 "tbody"))
-            (.-innerHTML
-              (views/tbody review edition work audience reviewer worksource)))
-      (feedback "OK! Anbefaling åpnet.")))
+        status (.getStatus response)]
+    (if (= status 200)
+      (let [solutions (reader/read-string (.getResponseText response))
+            review (extract [:title :teaser :text :created :issued :modified] solutions)
+            edition (extract [:edition :editiontitle :editionauthor] solutions)
+            work (extract [:work :worktitle :workauthor] solutions)
+            audience (extract [:audience] solutions)
+            reviewer (extract [:reviewer :reviewername] solutions)
+            worksource (extract [:workplace :workplacename :source :sourcename] solutions)]
+        (do
+          (set! (.-value (sel1 "#modified")) (->> review first :modified))
+          (set! (.-value (sel1 "#title")) (->> review first :title))
+          (set! (.-data-original-value (sel1 "#title")) (->> review first :title))
+          (set! (.-value (sel1 "#teaser")) (->> review first :teaser))
+          (set! (.-data-original-value (sel1 "#teaser")) (->> review first :teaser))
+          (set! (.-value (sel1 "#text")) (->> review first :text)))
+        (set! (.-data-original-value (sel1 "#text")) (->> review first :text))
+        (set! (.-data-original-value (sel1 "#review-uri"))
+              (.trim (.-value (sel1 "#review-uri"))))
+        (sync-preview)
+        (set! (.-innerHTML (sel1 "tbody"))
+              (.-innerHTML
+                (views/tbody review edition work audience reviewer worksource)))
+        (feedback "(200) OK. Anbefaling åpnet."))
+      (let [msg (reader/read-string (.getResponseText response))]
+        (feedback (str "(" status " )" msg))))))
+
+(defn saved [event]
+  (let [response (.-target event)
+        status (.getStatus response)
+        msg (reader/read-string (.getResponseText response))]
+    (feedback (str "(" status ") " msg))
+    (when (= status 200)
+      (saved-sync))))
 
 (defn load-review []
   (let [body {:uri (.trim (.-value (sel1 "#review-uri")))}]
@@ -83,7 +106,7 @@
                  :teaser (.-value (sel1 "#teaser"))
                  :text (.-value (sel1 "#text"))}
         body {:uri uri :old old :updated updated}]
-    (edn-call "/save" load-review "PUT" body)
+    (edn-call "/save" saved "PUT" body)
     (wait-please!)))
 
 (defn ^:export init []
