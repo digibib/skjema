@@ -81,7 +81,7 @@
                 (views/tbody review edition work audience reviewer worksource)))
         (feedback "(200) OK. Anbefaling åpnet."))
       (let [msg (reader/read-string (.getResponseText response))]
-        (feedback (str "(" status " )" msg))))))
+        (feedback (str "(" status ") " msg))))))
 
 (defn saved [event]
   (let [response (.-target event)

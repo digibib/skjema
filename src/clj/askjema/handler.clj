@@ -19,7 +19,10 @@
   (POST "/load" [uri]
         (let [res (sparql/fetch (URI. uri))]
           (if (= 200 (res :status))
-            (generate-response (sparql/solutions res))
+            (let [data (sparql/solutions res)]
+              (if (empty? data)
+                (generate-response "Finner ingen anbefaling på den URI-en" 404)
+                (generate-response data)))
             (generate-response "Noe gikk galt" (res :status)))))
   (PUT "/save" [uri old updated]
        (let [res (sparql/save (URI. uri) old updated)]
