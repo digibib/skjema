@@ -48,6 +48,12 @@
               (.-value (sel1 (str "#" e))))))
     (set! (.-disabled (sel1 "#save")) false)))
 
+(defn reset-page! []
+  (do
+    (.reset (sel1 "#review-form"))
+    (sync-preview)
+    (set! (.-innerHTML (sel1 "tbody")) "")))
+
 (defn feedback [msg]
   (set! (.-innerHTML (sel1 "#message")) msg))
 
@@ -81,7 +87,8 @@
                 (views/tbody review edition work audience reviewer worksource)))
         (feedback "(200) OK. Anbefaling åpnet."))
       (let [msg (reader/read-string (.getResponseText response))]
-        (feedback (str "(" status ") " msg))))))
+        (feedback (str "(" status ") " msg))
+        (reset-page!)))))
 
 (defn saved [event]
   (let [response (.-target event)
