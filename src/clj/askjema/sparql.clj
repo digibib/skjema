@@ -91,15 +91,6 @@
                       {:form-params {:query (save-review uri old updated) }
                        :digest-auth [(config :username) (config :password)]})))
 
-(defn bindings
-  [response]
-  (let [{{vars :vars} :head {solutions :bindings} :results}
-        (->> response :body parse-string keywordize-keys)
-        vars (map keyword vars)]
-    (into {}
-          (for [v vars]
-            [v (set (keep #(->> % v :value) solutions))]))))
-
 (defn solutions
   [response]
   (for [solution
@@ -107,7 +98,3 @@
     (into {}
           (for [[k v] solution]
             [k (:value v)]))))
-
-(defn extract
-  [vars solutions]
-  (set (remove empty? (map #(select-keys % vars) solutions))))
