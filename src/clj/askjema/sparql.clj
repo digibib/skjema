@@ -10,7 +10,9 @@
             [askjema.config :refer [config]])
   (:import java.net.URI))
 
-(defn modify [q uri]
+(defn modify
+  "Virtuoso-specific equivalent of WITH."
+  [q uri]
   (assoc q :with {:tag "MODIFY" :bounds [" "] :sep " " :content [uri]}))
 
 (register-namespaces {:skos "<http://www.w3.org/2004/02/skos/core#>"
@@ -28,15 +30,16 @@
 (def sourcegraph (URI. "http://data.deichman.no/sources"))
 
 (defn load-review
+  "SPARQL-query loads all relevant properties on review."
   [uri]
   (query
     (from reviewsgraph)
     (from-named booksgraph sourcegraph)
-    (select :title :text :teaser :created :issued :modified :audience
-            :source :sourcename :reviewer :reviewername :workplace
-            :workplacename :edition :editiontitle
-            [(group-concat :editionauthor ", ") :editionauthor] :work :worktitle
-            [(group-concat :workauthor ", ") :workauthor])
+    (select-reduced :title :text :teaser :created :issued :modified :audience
+                    :source :sourcename :reviewer :reviewername :workplace
+                    :workplacename :edition :editiontitle
+                    [(group-concat :editionauthor ", ") :editionauthor] :work
+                    :worktitle [(group-concat :workauthor ", ") :workauthor])
     (where uri [:rev :title] :title \;
                [:dc :abstract] :teaser \;
                [:rev :text] :text \;
@@ -64,6 +67,8 @@
              :wauthor [:foaf :name] :workauthor))))
 
 (defn save-review
+  "SPARQL-query to update review title, teaser and text.
+  Also updates dc:modified to the current timestamp."
   [uri old updated]
   (query
     (modify reviewsgraph)
@@ -74,10 +79,10 @@
     (insert uri [:rev :title] (updated :title) \;
                 [:dc :abstract] (updated :teaser) \;
                 [:rev :text] [(updated :text) :no] \;
-                [:dc :modified] [(str (from-time-zone (now) (time-zone-for-offset 1))) "xsd:dateTime"]
-                )))
+                [:dc :modified] [(str (from-time-zone (now) (time-zone-for-offset 1))) "xsd:dateTime"])))
 
 (defn fetch
+  "Sends the 'load-review' query to SPARQL endpoint with a HTTP GET request."
   [uri]
   (client/get (config :endpoint)
               (merge (config :http-options)
@@ -85,6 +90,7 @@
                       {"query" (load-review uri)
                        "format" "application/sparql-results+json"}})))
 (defn save
+  "Sends the 'save-review' query to SPARQL endpoint with a HTTP POST request."
   [uri old updated]
   (client/post (config :sparul)
                (merge (config :http-options)
@@ -92,6 +98,7 @@
                        :digest-auth [(config :username) (config :password)]})))
 
 (defn solutions
+  "Generate solutions-map from application/sparql-results+json response."
   [response]
   (for [solution
         (->> response :body parse-string keywordize-keys :results :bindings)]
