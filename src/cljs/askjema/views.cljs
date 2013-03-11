@@ -20,14 +20,16 @@
     [:td.property "Sist endret"]
     [:td.label (->> review first :modified)]
     [:td.uri "-"]]
-   [:tr#edition
-    [:td.property "Omtaler utgave"]
-    [:td.label (str \" (->> edition first :editiontitle) \" " av " (->> edition first :editionauthor))]
-    (uri-link (->> edition first :edition))]
-   [:tr#work
-    [:td.property "Omtaler verk"]
-    [:td.label (str \" (->> work first :worktitle) \" " av " (->> work first :workauthor))]
-    (uri-link (->> work first :work))]
+   (for [ed edition]
+     [:tr#edition
+      [:td.property "Omtaler utgave"]
+      [:td.label (str \" (ed :editiontitle) \" " av " (ed :editionauthor))]
+      (uri-link (ed :edition))])
+   (for [w work]
+     [:tr#work
+      [:td.property "Omtaler verk"]
+      [:td.label (str \" (w :worktitle) \" " av " (w :workauthor))]
+      (uri-link (w :work))])
    (for [aud audience]
      [:tr.audience
       [:td.property "Målgruppe"]
