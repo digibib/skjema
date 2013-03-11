@@ -33,7 +33,7 @@
           (dom/remove-class! elem "altered"))
         (set! (.-innerHTML (sel1 (str "#preview-" e)))
               (.-value (sel1 (str "#" e))))))
-    (if (= 0 (.-length (sel ".altered")))
+    (if (zero? (.-length (sel ".altered")))
       (set! (.-disabled (sel1 "#save")) true)
       (set! (.-disabled (sel1 "#save")) false))))
 
