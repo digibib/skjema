@@ -2,7 +2,7 @@
   (:require [dommy.template :as html])
   (:require-macros [dommy.template-compile :refer [deftemplate]]))
 
-(defn uri-link [uri]
+(defn uri-link [uri]
   [:td.uri
    [:a {:href uri} (str \< uri \>)]])
 
