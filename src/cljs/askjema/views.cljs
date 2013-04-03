@@ -33,7 +33,11 @@
    (for [aud audience]
      [:tr.audience
       [:td.property "Målgruppe"]
-      [:td.label "-"]
+      [:td.label (cond
+                   (re-find #"children" aud) "barn"
+                   (re-find #"youth" aud) "ungdom"
+                   (re-find #"adult" aud) "voksen"
+                   :else "-")]
       (uri-link (aud :audience))])
    (for [rev reviewer]
      [:tr.reviewer
