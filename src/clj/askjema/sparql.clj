@@ -52,8 +52,9 @@
                [:rev :reviewer] :reviewer \.
            (graph sourcegraph :source [:foaf :name] :sourcename \.)
            (optional
-             (graph sourcegraph :reviewer [:foaf :name] :reviewername \;
-                                          [:org :memberOf] :workplace \.
+             (graph sourcegraph :reviewer [:foaf :name] :reviewername \.))
+           (optional
+             (graph sourcegraph :reviewer [:org :memberOf] :workplace \.
                                 :workplace [:skos :prefLabel] :workplacename \.))
            (graph booksgraph
              :edition a [:fabio :Manifestation] \;
