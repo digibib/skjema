@@ -4,7 +4,8 @@
             [boutros.matsu.sparql :refer :all]
             [boutros.matsu.core :refer [register-namespaces]]
             [cheshire.core :refer [parse-string]]
-            [clj-time.core :refer [now from-time-zone time-zone-for-offset]]
+            [clj-time.core :refer [now]]
+            [clj-time.local :refer [to-local-date-time]]
             [clojure.walk :refer [keywordize-keys]]
             [clojure.java.io :as io]
             [askjema.config :refer [config]])
@@ -79,7 +80,7 @@
     (insert uri [:rev :title] (updated :title) \;
                 [:dc :abstract] (updated :teaser) \;
                 [:rev :text] [(updated :text) :no] \;
-                [:dc :modified] [(str (from-time-zone (now) (time-zone-for-offset 1))) "xsd:dateTime"])))
+                [:dc :modified] (to-local-date-time (now)))))
 
 (defn fetch
   "Sends the 'load-review' query to SPARQL endpoint with a HTTP GET request."
