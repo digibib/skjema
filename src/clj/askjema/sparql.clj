@@ -76,11 +76,12 @@
     (delete uri [:rev :title] (old :title) \;
                 [:dc :abstract] (old :teaser) \;
                 [:rev :text] [(old :text) :no] \;
-                [:dc :modified] [(old :modified) "xsd:dateTime"] \.)
+                [:dc :modified] :modified \.)
     (insert uri [:rev :title] (updated :title) \;
                 [:dc :abstract] (updated :teaser) \;
                 [:rev :text] [(updated :text) :no] \;
-                [:dc :modified] (to-local-date-time (now)))))
+                [:dc :modified] (to-local-date-time (now)))
+    (where uri [:dc :modified] :modified)))
 
 (defn fetch
   "Sends the 'load-review' query to SPARQL endpoint with a HTTP GET request."
