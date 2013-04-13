@@ -26,8 +26,8 @@
   (do
     (doseq [e ["title" "teaser" "text"]]
       (let [elem (sel1 (str "#" e))
-            old (.-data-original-value elem)
-            nju (.-value elem)]
+            old (or (.-data-original-value elem) "")
+            nju (or (.-value elem) "")]
         (if (not= old nju)
           (dom/add-class! elem "altered")
           (dom/remove-class! elem "altered"))
@@ -41,8 +41,8 @@
   (do
     (doseq [e ["title" "teaser" "text"]]
       (let [elem (sel1 (str "#" e))
-            old (.-data-original-value elem)
-            nju (.-value elem)]
+            old (.-data-original-value (or elem ""))
+            nju (.-value (or elem ""))]
         (dom/remove-class! elem "altered")
         (set! (.-data-original-value elem)
               (.-value (sel1 (str "#" e))))))
@@ -75,7 +75,7 @@
           (set! (.-value (sel1 "#modified")) (->> review first :modified))
           (set! (.-value (sel1 "#title")) (->> review first :title))
           (set! (.-data-original-value (sel1 "#title")) (->> review first :title))
-          (set! (.-value (sel1 "#teaser")) (->> review first :teaser))
+          (set! (.-value (sel1 "#teaser")) (or (->> review first :teaser) ""))
           (set! (.-data-original-value (sel1 "#teaser")) (->> review first :teaser))
           (set! (.-value (sel1 "#text")) (->> review first :text)))
         (set! (.-data-original-value (sel1 "#text")) (->> review first :text))
