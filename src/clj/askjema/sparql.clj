@@ -3,6 +3,7 @@
   (:require [clj-http.client :as client]
             [boutros.matsu.sparql :refer :all]
             [boutros.matsu.core :refer [register-namespaces]]
+            [boutros.matsu.vendor.virtuoso :refer [modify]]
             [cheshire.core :refer [parse-string]]
             [clj-time.core :refer [now]]
             [clj-time.local :refer [to-local-date-time]]
@@ -10,11 +11,6 @@
             [clojure.java.io :as io]
             [askjema.config :refer [config]])
   (:import java.net.URI))
-
-(defn modify
-  "Virtuoso-specific equivalent of WITH."
-  [q uri]
-  (assoc q :with {:tag "MODIFY" :bounds [" "] :sep " " :content [uri]}))
 
 (register-namespaces {:skos "<http://www.w3.org/2004/02/skos/core#>"
                       :deich "<http://data.deichman.no/>"
