@@ -67,10 +67,6 @@ button {
 	background: #f5f5f5;
 }
 
-#preview-teaser:before, #preview-teaser:after {
-	content: '"';
-}
-
 #metadata {
 	clear: both;
 	width: 98%;
