@@ -8,9 +8,6 @@ pom.xml
 *.jar
 *.class
 *.js
-.lein-deps-sum
-.lein-failures
-.lein-plugins
-.lein-env
+.lein*
 notater
 /src/clj/askjema/config.clj
