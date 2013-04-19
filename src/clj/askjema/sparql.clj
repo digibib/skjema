@@ -71,11 +71,11 @@
   (query
     (modify reviewsgraph)
     (delete uri [:rev :title] (old :title) \;
-                [:dc :abstract] (old :teaser) \;
+                [:dc :abstract] (or (old :teaser) "") \;
                 [:rev :text] [(old :text) :no] \;
                 [:dc :modified] :modified \.)
     (insert uri [:rev :title] (updated :title) \;
-                [:dc :abstract] (updated :teaser) \;
+                [:dc :abstract] (or (updated :teaser) "") \;
                 [:rev :text] [(updated :text) :no] \;
                 [:dc :modified] (to-local-date-time (now)))
     (where uri [:dc :modified] :modified)))
