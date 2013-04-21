@@ -43,7 +43,7 @@
 
 (def war-handler
   (-> app
-
+      (wrap-basic-authentication authenticated?)
       (wrap-resource "public")
       (wrap-edn-params)
       (wrap-file-info)))
