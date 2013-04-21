@@ -10,6 +10,7 @@
                  [clj-http "0.6.4"]
                  [cheshire "5.0.1"]
                  [matsu "0.1.3-SNAPSHOT"]
+                 [ring-basic-authentication "1.0.2"]
                  [prismatic/dommy "0.0.2"]]
   :plugins [[lein-ring "0.8.3"]
             [lein-cljsbuild "0.3.0"]]

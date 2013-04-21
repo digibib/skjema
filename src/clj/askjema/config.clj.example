@@ -5,4 +5,6 @@
    :sparul "http://localhost:8890/sparql-auth"
    :username "user"
    :password "secret"
+   :authn "foo"
+   :authp "bar"
    :http-options {:throw-exceptions false :debug true :debug-body true}})

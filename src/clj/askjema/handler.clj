@@ -5,9 +5,15 @@
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.file-info :refer [wrap-file-info]]
             [ring.middleware.edn :refer [wrap-edn-params]]
+            [ring.middleware.basic-authentication :refer [wrap-basic-authentication]]
             [askjema.sparql :as sparql]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [askjema.config :refer [config]])
   (:import java.net.URI))
+
+(defn authenticated? [name pass]
+  (and (= name (config :authn))
+       (= pass (config :authp))))
 
 (defn generate-response [data & [status]]
   {:status (or status 200)
@@ -26,6 +32,7 @@
             (generate-response "Noe gikk galt" (res :status)))))
   (PUT "/save" [uri old updated]
        (let [res (sparql/save (URI. uri) old updated)]
+         (pr (res :body))
          (if (= 200 (res :status))
            (generate-response "OK. Anbefaling lagret")
            (generate-response "Fikk ikke lagret." (res :status)))))
@@ -36,6 +43,7 @@
 
 (def war-handler
   (-> app
+
       (wrap-resource "public")
       (wrap-edn-params)
       (wrap-file-info)))
