@@ -68,7 +68,7 @@
   "SPARQL-query to update review title, teaser and text.
   Also updates dc:modified to the current timestamp."
   [uri old updated]
-  (if (seq (old :teaser))
+  (if (seq (updated :teaser))
     (query
       (modify reviewsgraph)
       (delete uri [:rev :title] (old :title) \;
@@ -82,13 +82,17 @@
       (where uri [:dc :modified] :modified))
     (query
       (modify reviewsgraph)
-      (delete uri [:rev :title] (old :title) \;
-                  [:rev :text] [(old :text) :no] \;
+      (delete uri [:rev :title] :oldtitle \;
+                  [:rev :text] :oldtext \;
+                  [:dc :abstract] :oldabstract \;
                   [:dc :modified] :modified \.)
       (insert uri [:rev :title] (updated :title) \;
                   [:rev :text] [(updated :text) :no] \;
                   [:dc :modified] (to-local-date-time (now)))
-      (where uri [:dc :modified] :modified))))
+      (where uri [:dc :modified] :modified \;
+                 [:rev :title] :oldtitle \;
+                 [:dc :abstract] :oldabstract \;
+                 [:rev :text] :oldtext))))
 
 (defn fetch
   "Sends the 'load-review' query to SPARQL endpoint with a HTTP GET request."
