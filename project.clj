@@ -14,6 +14,7 @@
   :plugins [[lein-ring "0.8.3"]
             [lein-cljsbuild "0.3.0"]]
   :ring {:handler askjema.handler/war-handler }
+  :immutant {:context-path "/skjema"}
   :profiles {:production
              {:ring
               {:open-browser? false, :stacktraces? false, :auto-reload? false}}

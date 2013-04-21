@@ -58,7 +58,7 @@
   (set! (.-innerHTML (sel1 "#message")) msg))
 
 (defn wait-please! []
-  (feedback "<img src='img/loading.gif'>"))
+  (feedback "<img src='skjema/img/loading.gif'>"))
 
 (defn loaded [event]
   (let [response (.-target event)
@@ -101,7 +101,7 @@
 (defn load-review []
   (let [body {:uri (.trim (.-value (sel1 "#review-uri")))}]
     (wait-please!)
-    (edn-call "/load" loaded "POST" body)))
+    (edn-call "skjema/load" loaded "POST" body)))
 
 (defn save-review []
   (let [uri (.-data-original-value (sel1 "#review-uri"))
@@ -113,7 +113,7 @@
                  :teaser (.-value (sel1 "#teaser"))
                  :text (.-value (sel1 "#text"))}
         body {:uri uri :old old :updated updated}]
-    (edn-call "/save" saved "PUT" body)
+    (edn-call "skjema/save" saved "PUT" body)
     (wait-please!)))
 
 (defn ^:export init []
