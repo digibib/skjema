@@ -65,31 +65,20 @@
   "SPARQL-query to update review title, teaser and text.
   Also updates dc:modified to the current timestamp."
   [uri old updated]
-  (if (seq (updated :teaser))
-    (query
-      (modify reviewsgraph)
-      (delete uri [:rev :title] (old :title) \;
-                  [:dc :abstract] (old :teaser) \;
-                  [:rev :text] (old :text) \;
-                  [:dc :modified] :modified \.)
-      (insert uri [:rev :title] (updated :title) \;
-                  [:dc :abstract] (updated :teaser) \;
-                  [:rev :text] (updated :text) \;
-                  [:dc :modified] (to-local-date-time (now)))
-      (where uri [:dc :modified] :modified))
-    (query
-      (modify reviewsgraph)
-      (delete uri [:rev :title] :oldtitle \;
-                  [:rev :text] :oldtext \;
-                  [:dc :abstract] :oldabstract \;
-                  [:dc :modified] :modified \.)
-      (insert uri [:rev :title] (updated :title) \;
-                  [:rev :text] (updated :text) \;
-                  [:dc :modified] (to-local-date-time (now)))
-      (where uri [:dc :modified] :modified \;
-                 [:rev :title] :oldtitle \;
-                 [:dc :abstract] :oldabstract \;
-                 [:rev :text] :oldtext))))
+  (query
+    (modify reviewsgraph)
+    (delete uri [:rev :title] :oldtitle \;
+                [:dc :abstract] :oldteaser \;
+                [:rev :text] :oldtext \;
+                [:dc :modified] :modified \.)
+    (insert uri [:rev :title] (updated :title) \;
+                [:dc :abstract] (updated :teaser) \;
+                [:rev :text] (updated :text) \;
+                [:dc :modified] (to-local-date-time (now)))
+    (where uri [:dc :modified] :modified \;
+               [:rev :title] :oldtitle \.
+           (optional uri [:rev :text] :oldtext)
+           (optional uri [:dc :abstract] :oldteaser))))
 
 (defn fetch
   "Sends the 'load-review' query to SPARQL endpoint with a HTTP GET request."
