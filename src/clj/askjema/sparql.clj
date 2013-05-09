@@ -38,7 +38,6 @@
                     [(group-concat :editionauthor ", ") :editionauthor] :work
                     :worktitle [(group-concat :workauthor ", ") :workauthor])
     (where uri [:rev :title] :title \;
-               [:rev :text] :text \;
                [:dc :created] :created \;
                [:dc :issued] :issued \;
                [:dc :modified] :modified \;
@@ -46,6 +45,7 @@
                [:dc :source] :source \;
                [:rev :reviewer] :reviewer \.
            (optional uri [:dc :abstract] :teaser \.)
+           (optional uri [:rev :text] :text \.)
            (graph sourcegraph :source [:foaf :name] :sourcename \.)
            (optional
              (graph sourcegraph :reviewer [:foaf :name] :reviewername \.))
