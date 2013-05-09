@@ -117,13 +117,8 @@
     (wait-please!)))
 
 (defn ^:export init []
-  (log "Hallo der, mister Åsen.")
   (dom/listen! (sel1 "#load") :click load-review)
   (dom/listen! (sel1 "#save") :click save-review)
   (dom/listen! (sel1 "#title") :keyup sync-preview)
   (dom/listen! (sel1 "#teaser") :keyup sync-preview)
   (dom/listen! (sel1 "#text") :keyup sync-preview))
-
-;; Debug
-
-;(repl/connect "http://localhost:9000/repl")

@@ -32,7 +32,6 @@
             (generate-response "Noe gikk galt" (res :status)))))
   (PUT "/save" [uri old updated]
        (let [res (sparql/save (URI. uri) old updated)]
-         (pr (res :body))
          (if (= 200 (res :status))
            (generate-response "OK. Anbefaling lagret")
            (generate-response "Fikk ikke lagret." (res :status)))))
