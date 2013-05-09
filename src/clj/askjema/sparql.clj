@@ -70,11 +70,11 @@
       (modify reviewsgraph)
       (delete uri [:rev :title] (old :title) \;
                   [:dc :abstract] (old :teaser) \;
-                  [:rev :text] [(old :text) :no] \;
+                  [:rev :text] (old :text) \;
                   [:dc :modified] :modified \.)
       (insert uri [:rev :title] (updated :title) \;
                   [:dc :abstract] (updated :teaser) \;
-                  [:rev :text] [(updated :text) :no] \;
+                  [:rev :text] (updated :text) \;
                   [:dc :modified] (to-local-date-time (now)))
       (where uri [:dc :modified] :modified))
     (query
@@ -84,7 +84,7 @@
                   [:dc :abstract] :oldabstract \;
                   [:dc :modified] :modified \.)
       (insert uri [:rev :title] (updated :title) \;
-                  [:rev :text] [(updated :text) :no] \;
+                  [:rev :text] (updated :text) \;
                   [:dc :modified] (to-local-date-time (now)))
       (where uri [:dc :modified] :modified \;
                  [:rev :title] :oldtitle \;
