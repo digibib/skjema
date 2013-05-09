@@ -23,12 +23,12 @@
    (for [ed edition]
      [:tr#edition
       [:td.property "Omtaler utgave"]
-      [:td.label (str \" (ed :editiontitle) \" " av " (ed :editionauthor))]
+      [:td.label (str \" (ed :editiontitle) \" " av " (if (seq (ed :editionauthor)) (ed :editionauthor) "<mangler dc:creator>"))]
       (uri-link (ed :edition))])
    (for [w work]
      [:tr#work
       [:td.property "Omtaler verk"]
-      [:td.label (str \" (w :worktitle) \" " av " (w :workauthor))]
+      [:td.label (str \" (w :worktitle) \" " av " (if (seq (w :workauthor)) (w :workauthor) "<mangler dc:creator>"))]
       (uri-link (w :work))])
    (for [aud audience]
      [:tr.audience

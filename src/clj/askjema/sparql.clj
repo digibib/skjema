@@ -52,14 +52,14 @@
            (graph booksgraph
              :edition a [:fabio :Manifestation] \;
                       [:rev :hasReview] uri \;
-                      [:dc :title] :editiontitle \;
-                      [:dc :creator] :edauthor \.
-             :edauthor [:foaf :name] :editionauthor \.
+                      [:dc :title] :editiontitle \.
+             (optional :edition [:dc :creator] :edauthor \.)
+             (optional :edauthor [:foaf :name] :editionauthor \.)
              :work a [:fabio :Work] \;
                    [:rev :hasReview] uri \;
-                   [:dc :title] :worktitle \;
-                   [:dc :creator] :wauthor \.
-             :wauthor [:foaf :name] :workauthor))))
+                   [:dc :title] :worktitle \.
+             (optional :work [:dc :creator] :wauthor \.)
+             (optional :wauthor [:foaf :name] :workauthor)))))
 
 (defn save-review
   "SPARQL-query to update review title, teaser and text.
