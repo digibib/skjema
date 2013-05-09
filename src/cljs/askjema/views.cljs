@@ -44,12 +44,6 @@
       [:td.property "Anmelder"]
       [:td.label (or (rev :reviewername) "(mangler foaf:name)")]
       (uri-link (rev :reviewer))])
-   [:tr#workplace
-    [:td.property "Arbeidssted"]
-    [:td.label (or (->> worksource first :workplacename) "(ikke tilknyttet)")]
-    (if (->> worksource first :workplace)
-      (uri-link (->> worksource first :workplace))
-      [:td.uri "-"])]
    [:tr#source
     [:td.property "Kilde"]
     [:td.label (->> worksource first :sourcename)]
