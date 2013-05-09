@@ -72,7 +72,6 @@
             reviewer (extract [:reviewer :reviewername] solutions)
             worksource (extract [:workplace :workplacename :source :sourcename] solutions)]
         (do
-          (set! (.-value (sel1 "#modified")) (->> review first :modified))
           (set! (.-value (sel1 "#title")) (->> review first :title))
           (set! (.-data-original-value (sel1 "#title")) (->> review first :title))
           (set! (.-value (sel1 "#teaser")) (or (->> review first :teaser) ""))
@@ -107,8 +106,7 @@
   (let [uri (.-data-original-value (sel1 "#review-uri"))
         old {:title (.-data-original-value (sel1 "#title"))
              :teaser (.-data-original-value (sel1 "#teaser"))
-             :text (.-data-original-value (sel1 "#text"))
-             :modified (.-value (sel1 "#modified"))}
+             :text (.-data-original-value (sel1 "#text"))}
         updated {:title (.-value (sel1 "#title"))
                  :teaser (.-value (sel1 "#teaser"))
                  :text (.-value (sel1 "#text"))}

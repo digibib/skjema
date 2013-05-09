@@ -16,9 +16,9 @@
     [:td.property "Publisert"]
     [:td.label (->> review first :issued)]
     [:td.uri "-"]]
-   [:tr#modified
+   [:tr
     [:td.property "Sist endret"]
-    [:td.label (->> review first :modified)]
+    [:td#modified.label (->> review first :modified)]
     [:td.uri "-"]]
    (for [ed edition]
      [:tr#edition
