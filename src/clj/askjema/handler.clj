@@ -8,6 +8,7 @@
             [ring.middleware.basic-authentication :refer [wrap-basic-authentication]]
             [askjema.sparql :as sparql]
             [clojure.java.io :as io]
+            [immutant.messaging :as msg]
             [askjema.config :refer [config]])
   (:import java.net.URI))
 
@@ -33,7 +34,9 @@
   (PUT "/save" [uri old updated]
        (let [res (sparql/save (URI. uri) old updated)]
          (if (= 200 (res :status))
-           (generate-response "OK. Anbefaling lagret")
+           (do
+             (msg/publish "/queues/cache" {:type :review_include_affected :uri uri})
+             (generate-response "OK. Anbefaling lagret"))
            (generate-response "Fikk ikke lagret." (res :status)))))
   (route/resources "/")
   (route/not-found "Not Found"))
