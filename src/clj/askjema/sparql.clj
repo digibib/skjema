@@ -83,11 +83,12 @@
 (defn fetch
   "Sends the 'load-review' query to SPARQL endpoint with a HTTP GET request."
   [uri]
-  (client/get (config :endpoint)
+  (client/get (config :sparul)
               (merge (config :http-options)
                      {:query-params
                       {"query" (load-review uri)
-                       "format" "application/sparql-results+json"}})))
+                       "format" "application/sparql-results+json"}
+                      :digest-auth [(config :username) (config :password)]})))
 (defn save
   "Sends the 'save-review' query to SPARQL endpoint with a HTTP POST request."
   [uri old updated]
